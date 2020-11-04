@@ -1,0 +1,25 @@
+(define (make-heap value left right) (list value left right))
+(define (value heap) (car heap))
+(define (left heap) (cadr heap))
+(define (right heap) (caddr heap))
+
+;; (a)
+(define (heap-insert f x H)
+  (cond ((null? H) (make-heap x '() '()))
+        ((f x (value H)) (make-heap x (right H) (heap-insert f (value H) (left H))))
+        (else (make-heap (value H) (right H) (heap-insert f x (left H))))))
+
+;; (b)
+(define (combine f Ha Hb)
+  (cond ((null? Ha) Hb)
+        ((null? Hb) Ha)
+        ((f (value Ha) (value Hb)) (make-heap (value Ha) (combine f (left Ha) (right Ha)) Hb))
+        (else (make-heap (value Hb) (combine f (left Hb) (right Hb)) Ha))))
+
+;; (c)
+(define (empty? H)
+  (null? H))
+
+;; (d)
+(define (heap-remove f H)
+  (cond ((null? H) '()) (else (combine f (left H) (right H)))))
